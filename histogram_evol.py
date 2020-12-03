@@ -18,7 +18,7 @@ rcParams.update(params)
 import prepic_density as den
 
 species = 'e' 
-p = "/media/ong/WORKDIR2/betatron0009_02/"
+p = "/media/ong/WORKDIR2/betatron0013/"
 # Read histogram data
 eh_data = EnergyHistogramData(p)
 iterations = eh_data.get_iterations(species=species)
@@ -47,7 +47,7 @@ for i in range(0,n_points_x,1):
 div = en[1] - en[0]    
 array2D = array2D/div*1.6e-19*1e12*1000 # convert to pC/MeV
 
-ne = 8  # electron plasma density in 10^18 cm$^{-3}$
+ne = 7.4  # electron plasma density in 10^18 cm$^{-3}$
 gasPower = 2
 #  lengths in microns
 flat_top_dist = 1000  # plasma flat top distance
@@ -99,7 +99,7 @@ ax.text(0.5, 0.5, 'LGED preliminary', transform=ax.transAxes,
     ha='center', va='center', rotation='30')
 
 fig.savefig(
-    f"{p}/time_slice.png",
+    f"time_slice.png",
     dpi=600,
     transparent=False,
     bbox_inches="tight")
