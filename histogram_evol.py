@@ -18,7 +18,7 @@ rcParams.update(params)
 import prepic_density as den
 
 species = 'e' 
-p = "/media/ong/WORKDIR2/betatron0012_02/"
+p = "/media/ong/WORKDIR2/betatron0013/"
 # Read histogram data
 eh_data = EnergyHistogramData(p)
 iterations = eh_data.get_iterations(species=species)
@@ -49,7 +49,12 @@ for i in range(0,n_points_x,1):
     
 array2D = array2D/div*1.6e-19*1e12 # convert to pC/MeV
 
-ne = 8 # electron plasma density in 10^18 cm$^{-3}$
+# histogram low energy cutoff [MeV]
+cutoff = 50
+init = int(cutoff/div)
+vmax = np.max(array2D[:,init:])
+
+ne = 7.4 # electron plasma density in 10^18 cm$^{-3}$
 gasPower = 2
 #  lengths in microns
 flat_top_dist = 1000  # plasma flat top distance
@@ -69,11 +74,11 @@ dens = den.dens_func(
     )
 
 fig = plt.figure()
-ax = fig.add_subplot(111, label="1")
-ax2 = fig.add_subplot(111, label="2", frame_on=False)
+ax = fig.add_subplot(111)
+ax2 = fig.add_subplot(111, frame_on=False)
 img = ax.imshow(array2D.T,
                 origin='lower',
-                vmin=0,vmax=3,
+                vmin=0,vmax=vmax,
                 extent=extent,
                 aspect='auto',
                 cmap='jet_alpha',
@@ -93,13 +98,14 @@ cbar.set_label(r"$dQ/dE~(\mathrm{pC/MeV})$")
 ax.plot(all_x, dens*0.25*Y.max(), color="black")
 ax.text(gasCenterLeft_SI, 0.28*Y.max(),
        r"$n_0=$ %s $\times 10^{18} \; \mathrm{cm^{-3}}$" % ne)
-ax.set_ylim(ymin=0)
+ax.set_ylim(ymin=Y.min(),ymax=Y.max())
+ax.set_xlim(xmin=all_x.min(),xmax=all_x.max())
 ax.set_ylabel(r'$\mathrm{Energy}~(\mathrm{MeV})$')
 ax.set_xlabel(r'$y~(\mathrm{\mu m})$')
 ax.minorticks_on()
 
 # add histogram at final iteration
-ax2.plot(array2D[n_points_x-1,200:]*300,Y[200:], color="red")
+ax2.plot(array2D[n_points_x-1,init:]*vmax,Y[init:], color="red")
 ax2.set_xlim(xmin=all_x.min(),xmax=all_x.max())
 ax2.set_ylim(ymin=Y.min(),ymax=Y.max())
 ax2.invert_xaxis()
