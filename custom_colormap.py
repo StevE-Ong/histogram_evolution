@@ -30,8 +30,23 @@ def colormap_alpha(color):
     # get colormap
     ncolors = 256
     color_array = plt.get_cmap(f'{color}')(range(ncolors))
+    # create alpha values
+    alphas = np.zeros(ncolors)
+    const = -(np.log(1e-2)-1e-2)/ncolors 
+    
+    for i in range(ncolors):   
+        if i==0:
+            alphas[i] = 0.0
+        else:
+            alphas[i] = 1-np.exp(-const*i+1e-2)
+            
+    # Define the background as white
+    BG = np.asarray([1., 1., 1.,])
+    
     # change alpha values
-    color_array[:,-1] = np.linspace(0.0,1.0,ncolors)
+    for i in range(ncolors):
+        color_array[i,:-1] = color_array[i,:-1] * alphas[i] + BG * (1.- alphas[i])   
+        
     # create a colormap object
     map_object = LinearSegmentedColormap.from_list(name=f'{color}_alpha',colors=color_array)    
     # register this new colormap with matplotlib
